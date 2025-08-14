@@ -25,7 +25,7 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated }) 
         userId:parseInt(user_Id),// backend will map userId to createdBy
       };
 
-      await axios.post("http://localhost:8080/api/tickets", ticketPayload);
+      await axios.post("https://ticketsystem-3.onrender.com/api/tickets", ticketPayload);
       onTicketCreated(); // Refresh tickets list
       onClose(); // Close modal
     } catch (error) {
