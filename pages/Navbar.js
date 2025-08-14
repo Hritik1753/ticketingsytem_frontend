@@ -1,8 +1,16 @@
-import React from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-const Navbar = () => {
+export default function Navbar() {
   const router = useRouter();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
+  }, []);
 
   const handleLogout = () => {
     // Clear all saved data from localStorage
@@ -16,12 +24,20 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white px-6 py-3 flex items-center justify-between shadow-md">
       {/* Left Section */}
       <div className="flex items-center space-x-6">
-        <a href="/AdminDashboard" className="hover:text-yellow-400 font-semibold">
-          Ticket
-        </a>
-        <a href="/User" className="hover:text-yellow-400 font-semibold">
-          User
-        </a>
+        {role === "ADMIN" && (
+          <a
+            href="/AdminDashboard"
+            className="hover:text-yellow-400 font-semibold"
+          >
+            Ticket
+          </a>
+        )}
+
+        {role === "ADMIN" && (
+          <a href="/User" className="hover:text-yellow-400 font-semibold">
+            User
+          </a>
+        )}
       </div>
 
       {/* Right Section */}
@@ -36,6 +52,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
-export default Navbar;
 

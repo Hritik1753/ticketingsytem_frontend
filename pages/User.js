@@ -6,7 +6,13 @@ import Navbar from "./Navbar";
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editUser, setEditUser] = useState({ id: "", name: "", email: "", role: "", password: "" });
+  const [editUser, setEditUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    role: "",
+    password: "",
+  });
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchData = async () => {
@@ -20,7 +26,9 @@ export default function AdminDashboard() {
 
   const deleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/users/${userId}`);
+      await axios.delete(
+        `https://ticketsystem-3.onrender.com/api/users/${userId}`
+      );
       fetchData();
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -29,7 +37,10 @@ export default function AdminDashboard() {
 
   const handleUpdateUser = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/users/${editUser.id}`, editUser);
+      await axios.put(
+        `https://ticketsystem-3.onrender.com/api/users/${editUser.id}`,
+        editUser
+      );
       setIsModalOpen(false);
       fetchData();
     } catch (error) {
@@ -52,8 +63,13 @@ export default function AdminDashboard() {
     <>
       <Navbar />
 
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+      <div
+        className="p-6 min-h-screen"
+        style={{ background: "linear-gradient(135deg, #89f7fe, #66a6ff)" }}
+      >
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Admin Dashboard
+        </h1>
 
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">All Users</h2>
 
@@ -88,7 +104,10 @@ export default function AdminDashboard() {
                   <td className="px-6 py-3">{user.role}</td>
                   <td className="px-6 py-3 flex space-x-2">
                     <button
-                      onClick={() => { setEditUser(user); setIsModalOpen(true); }}
+                      onClick={() => {
+                        setEditUser(user);
+                        setIsModalOpen(true);
+                      }}
                       className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                     >
                       Edit
@@ -105,7 +124,10 @@ export default function AdminDashboard() {
 
               {filteredUsers.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  <td
+                    colSpan="5"
+                    className="px-6 py-4 text-center text-gray-500"
+                  >
                     No users found
                   </td>
                 </tr>

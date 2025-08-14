@@ -17,8 +17,12 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const ticketsRes = await axios.get("http://localhost:8080/api/tickets");
-      const usersRes = await axios.get("http://localhost:8080/api/users");
+      const ticketsRes = await axios.get(
+        "https://ticketsystem-3.onrender.com/api/tickets"
+      );
+      const usersRes = await axios.get(
+        "https://ticketsystem-3.onrender.com/api/users"
+      );
       setUsers(usersRes.data);
       setTickets(ticketsRes.data);
       setFilteredTickets(ticketsRes.data);
@@ -33,24 +37,34 @@ export default function AdminDashboard() {
 
     // Dropdown filters
     if (priorityFilter) {
-      filtered = filtered.filter(ticket => ticket.priority === priorityFilter);
+      filtered = filtered.filter(
+        (ticket) => ticket.priority === priorityFilter
+      );
     }
     if (statusFilter) {
-      filtered = filtered.filter(ticket => ticket.status === statusFilter);
+      filtered = filtered.filter((ticket) => ticket.status === statusFilter);
     }
     if (assignedAgentFilter) {
-      filtered = filtered.filter(ticket => String(ticket.assignedToId) === assignedAgentFilter);
+      filtered = filtered.filter(
+        (ticket) => String(ticket.assignedToId) === assignedAgentFilter
+      );
     }
 
     // Search bar filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(ticket => 
-        ticket.priority.toLowerCase().includes(query) ||
-        ticket.status.toLowerCase().includes(query) ||
-        String(ticket.assignedToId || "").toLowerCase().includes(query) ||
-        agents.find(agent => agent.id === ticket.assignedToId)?.name?.toLowerCase().includes(query) ||
-        ticket.title.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (ticket) =>
+          ticket.priority.toLowerCase().includes(query) ||
+          ticket.status.toLowerCase().includes(query) ||
+          String(ticket.assignedToId || "")
+            .toLowerCase()
+            .includes(query) ||
+          agents
+            .find((agent) => agent.id === ticket.assignedToId)
+            ?.name?.toLowerCase()
+            .includes(query) ||
+          ticket.title.toLowerCase().includes(query)
       );
     }
 
@@ -64,7 +78,7 @@ export default function AdminDashboard() {
   const fetchComments = async (ticketId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/comments/ticket/${ticketId}`
+        `https://ticketsystem-3.onrender.com/api/comments/ticket/${ticketId}`
       );
       setComments((prev) => ({ ...prev, [ticketId]: res.data }));
     } catch (error) {
@@ -74,7 +88,7 @@ export default function AdminDashboard() {
 
   const addComment = async (ticketId) => {
     try {
-      await axios.post("http://localhost:8080/api/comments", {
+      await axios.post("https://ticketsystem-3.onrender.com/api/comments", {
         ticketId,
         author: 1,
         message: newComment[ticketId] || "",
@@ -89,7 +103,7 @@ export default function AdminDashboard() {
   const assignTicket = async (ticketId, agentId) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/tickets/${ticketId}/assign/${agentId}`
+        `https://ticketsystem-3.onrender.com/api/tickets/${ticketId}/assign/${agentId}`
       );
       fetchData();
     } catch (error) {
@@ -100,7 +114,7 @@ export default function AdminDashboard() {
   const updateStatus = async (ticketId, status) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/tickets/${ticketId}/status`,
+        `https://ticketsystem-3.onrender.com/api/tickets/${ticketId}/status`,
         {},
         { params: { status } }
       );
@@ -112,7 +126,9 @@ export default function AdminDashboard() {
 
   const deleteTicket = async (ticketId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/tickets/${ticketId}`);
+      await axios.delete(
+        `https://ticketsystem-3.onrender.com/api/tickets/${ticketId}`
+      );
       fetchData();
     } catch (error) {
       console.error("Error deleting ticket:", error);
@@ -126,12 +142,12 @@ export default function AdminDashboard() {
   return (
     <>
       <Navbar />
-      <div className="p-6 bg-gray-100 min-h-screen">
+      <div
+        className="p-6 min-h-screen"
+        style={{ background: "linear-gradient(135deg, #89f7fe, #66a6ff)" }}
+      >
         <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-
-        {/* Filters */}
         <div className="flex gap-4 mb-6 bg-white p-4 rounded shadow flex-wrap">
-          {/* Priority Filter */}
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
@@ -144,7 +160,6 @@ export default function AdminDashboard() {
             <option value="URGENT">URGENT</option>
           </select>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -157,7 +172,6 @@ export default function AdminDashboard() {
             <option value="CLOSED">CLOSED</option>
           </select>
 
-          {/* Assigned Agent Filter */}
           <select
             value={assignedAgentFilter}
             onChange={(e) => setAssignedAgentFilter(e.target.value)}
@@ -201,11 +215,15 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {filteredTickets.map((ticket) => (
-                  <tr key={ticket.id} className="border-b hover:bg-gray-50 transition">
+                  <tr
+                    key={ticket.id}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
                     <td className="p-3">{ticket.title}</td>
                     <td className="p-3">{ticket.priority}</td>
                     <td className="p-3">
-                      {agents.find(a => a.id === ticket.assignedToId)?.name || "Unassigned"}
+                      {agents.find((a) => a.id === ticket.assignedToId)?.name ||
+                        "Unassigned"}
                     </td>
                     <td className="p-3">
                       <span
@@ -222,10 +240,15 @@ export default function AdminDashboard() {
                         {ticket.status}
                       </span>
                     </td>
-                    <td className="p-3">{ticket.userId}</td>
+                    <td className="p-3">
+                      {users.find((u) => u.id === ticket.userId)?.name ||
+                        "default"}
+                    </td>
                     <td className="p-3">
                       <select
-                        onChange={(e) => assignTicket(ticket.id, e.target.value)}
+                        onChange={(e) =>
+                          assignTicket(ticket.id, e.target.value)
+                        }
                         defaultValue=""
                         className="border rounded px-2 py-1"
                       >
@@ -240,7 +263,9 @@ export default function AdminDashboard() {
                     <td className="p-3">
                       <select
                         value={ticket.status}
-                        onChange={(e) => updateStatus(ticket.id, e.target.value)}
+                        onChange={(e) =>
+                          updateStatus(ticket.id, e.target.value)
+                        }
                         className="border rounded px-2 py-1"
                       >
                         <option value="OPEN">OPEN</option>
@@ -259,7 +284,11 @@ export default function AdminDashboard() {
                       <div className="space-y-1">
                         {comments[ticket.id]?.map((c) => (
                           <p key={c.id} className="text-sm">
-                            <strong>{c.author}</strong>: {c.message}
+                            <strong>
+                              {users.find((u) => u.id === c.author)?.name ||
+                                "default"}
+                            </strong>
+                            : {c.message}
                           </p>
                         ))}
                         <div className="flex gap-2 mt-1">
@@ -276,7 +305,13 @@ export default function AdminDashboard() {
                             className="border rounded px-2 py-1 flex-1"
                           />
                           <button
-                            onClick={() => addComment(ticket.id)}
+                            onClick={() => {
+                              if ((newComment[ticket.id] || "").trim() === "") {
+                                alert("Comment cannot be empty!");
+                                return;
+                              }
+                              addComment(ticket.id);
+                            }}
                             className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                           >
                             Add

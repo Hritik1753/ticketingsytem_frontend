@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+
 export default function Signup() {
   const router = useRouter();
   
@@ -8,7 +9,7 @@ export default function Signup() {
     name: '',
     email: '',
     password: '',
-    role: 'USER', // default role
+    role: 'USER',
   });
 
   const [message, setMessage] = useState('');
@@ -25,94 +26,158 @@ export default function Signup() {
     setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/users/register', formData);
+      const response = await axios.post(
+        'https://ticketsystem-3.onrender.com/api/users/register', 
+        formData
+      );
       if (response.status === 200 || response.status === 201) {
-        setMessage('User registered successfully!');
-        router.push('/')
+        setMessage('✅ User registered successfully!');
+        router.push('/');
         setFormData({ name: '', email: '', password: '', role: 'USER' });
       }
     } catch (error) {
       console.error(error);
-      setMessage('Registration failed. Please try again.');
+      setMessage('❌ Registration failed. Please try again.');
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2>Signup</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
+       <h1>Welcome to Ticket Raiser You can ask for solution of any problem you observe </h1>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Create Account</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={styles.inputGroup}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
+          <div style={styles.inputGroup}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+          </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
+          <div style={styles.inputGroup}>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+          </div>
 
-        <select name="role" value={formData.role} onChange={handleChange} style={styles.input}>
-          <option value="USER">User</option>
-          <option value="ADMIN">Admin</option>
-        </select>
+          <div style={styles.inputGroup}>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              style={styles.input}
+            >
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
 
-        <button type="submit" style={styles.button}>Register</button>
-      </form>
+          <button type="submit" style={styles.button}>
+            Register
+          </button>
+        </form>
 
-      {message && <p style={styles.message}>{message}</p>}
+        {message && <p style={styles.message}>{message}</p>}
+
+        <p style={styles.signupText}>
+          Already have an account?{' '}
+          <span style={styles.signupLink} onClick={() => router.push('/')}>
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
 
-// Simple inline styles
 const styles = {
   container: {
-    maxWidth: '400px',
-    margin: '50px auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    textAlign: 'center'
-  },
-  form: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '15px'
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    background: 'linear-gradient(135deg, #89f7fe, #66a6ff)',
+    padding: '20px'
+  },
+  card: {
+    background: '#fff',
+    padding: '30px',
+    margin:'50px',
+    borderRadius: '12px',
+    boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
+    width: '100%',
+    maxWidth: '400px',
+    animation: 'fadeIn 0.5s ease-in-out'
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: '25px',
+    color: '#333',
+    fontWeight: 'bold'
+  },
+  inputGroup: {
+    marginBottom: '15px'
   },
   input: {
-    padding: '10px',
-    fontSize: '16px'
+    width: '100%',
+    padding: '12px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '15px',
+    outline: 'none',
+    transition: 'all 0.3s ease',
   },
   button: {
-    padding: '10px',
+    width: '100%',
+    padding: '12px',
     backgroundColor: '#0070f3',
     color: 'white',
     border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer'
+    borderRadius: '8px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    marginTop: '5px',
+    transition: 'background 0.3s ease'
   },
   message: {
     marginTop: '15px',
-    fontWeight: 'bold'
+    textAlign: 'center',
+    fontSize: '14px',
+    color: '#444'
+  },
+  signupText: {
+    marginTop: '15px',
+    textAlign: 'center',
+    fontSize: '14px',
+    color: '#555'
+  },
+  signupLink: {
+    color: '#0070f3',
+    fontWeight: 'bold',
+    cursor: 'pointer'
   }
 };

@@ -17,7 +17,9 @@ export default function UserDashboard() {
         console.error("No userId in localStorage");
         return;
       }
-      const res = await axios.get(`http://localhost:8080/api/tickets/user/${userId}`);
+      const res = await axios.get(
+        `https://ticketsystem-3.onrender.com/api/tickets/user/${userId}`
+      );
       setTickets(res.data);
       res.data.forEach((ticket) => fetchComments(ticket.id));
     } catch (error) {
@@ -27,7 +29,9 @@ export default function UserDashboard() {
 
   const fetchComments = async (ticketId) => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/comments/ticket/${ticketId}`);
+      const res = await axios.get(
+        `https://ticketsystem-3.onrender.com/api/comments/ticket/${ticketId}`
+      );
       setComments((prev) => ({ ...prev, [ticketId]: res.data }));
     } catch (error) {
       console.error(`Error fetching comments for ticket ${ticketId}:`, error);
@@ -39,7 +43,7 @@ export default function UserDashboard() {
       const userId = localStorage.getItem("userId");
       if (!userId || !commentText[TicketId]?.trim()) return;
 
-      await axios.post(`http://localhost:8080/api/comments`, {
+      await axios.post(`https://ticketsystem-3.onrender.com/api/comments`, {
         ticketId: TicketId,
         author: userId,
         message: commentText[TicketId],
@@ -54,7 +58,9 @@ export default function UserDashboard() {
 
   const deleteTicket = async (ticketId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/tickets/${ticketId}`);
+      await axios.delete(
+        `https://ticketsystem-3.onrender.com/api/tickets/${ticketId}`
+      );
       fetchTickets();
     } catch (error) {
       console.error("Error deleting ticket:", error);
@@ -73,7 +79,10 @@ export default function UserDashboard() {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div
+      className="p-6 min-h-screen"
+      style={{ background: "linear-gradient(135deg, #89f7fe, #66a6ff)" }}
+    >
       <Navbar />
       <h1 className="text-3xl font-bold mb-6">🎟 My Tickets</h1>
 
